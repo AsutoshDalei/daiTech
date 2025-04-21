@@ -1,0 +1,36 @@
+cookie:
+  expiry_days: 10
+  key: dai$tech # To be filled with any string
+  name: dai%tech # To be filled with any string
+credentials:
+  usernames:
+    adalei:
+      email: asutoshd@gmail.com
+      failed_login_attempts: 0 # Will be managed automatically
+      first_name: Asutosh
+      last_name: Dalei
+      logged_in: False # Will be managed automatically
+      password: asutoshdalei#123 # Will be hashed automatically
+      roles: # Optional
+      - viewer
+    manyam:
+      email: manyam@gmail.com
+      failed_login_attempts: 0 # Will be managed automatically
+      first_name: Manya
+      last_name: Malik
+      logged_in: False # Will be managed automatically
+      password: manyam#123 # Will be hashed automatically
+      roles: # Optional
+      - admin
+      - viewer
+      - editor
+    atharvap:
+      email: atharvap@gmail.com
+      failed_login_attempts: 0 # Will be managed automatically
+      first_name: Atharva
+      last_name: Panvalkar
+      logged_in: False # Will be managed automatically
+      password: atharvap#123 # Will be hashed automatically
+      roles: # Optional
+      - admin
+      - viewer
