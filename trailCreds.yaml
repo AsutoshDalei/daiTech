@@ -12,7 +12,7 @@ credentials:
       logged_in: False # Will be managed automatically
       password: asutoshdalei#123 # Will be hashed automatically
       roles: # Optional
-      - viewer
+        - viewer
     manyam:
       email: manyam@gmail.com
       failed_login_attempts: 0 # Will be managed automatically
@@ -21,9 +21,9 @@ credentials:
       logged_in: False # Will be managed automatically
       password: manyam#123 # Will be hashed automatically
       roles: # Optional
-      - admin
-      - viewer
-      - editor
+        - admin
+        - viewer
+        - editor
     atharvap:
       email: atharvap@gmail.com
       failed_login_attempts: 0 # Will be managed automatically
@@ -32,5 +32,15 @@ credentials:
       logged_in: False # Will be managed automatically
       password: atharvap#123 # Will be hashed automatically
       roles: # Optional
-      - admin
-      - viewer
+        - admin
+        - viewer
+
+    tempuser:
+      email: tempuser@dai.com
+      failed_login_attempts: 0 # Will be managed automatically
+      first_name: Sherlock
+      last_name: Holmes
+      logged_in: False # Will be managed automatically
+      password: temp#123 # Will be hashed automatically
+      roles: # Optional
+        - viewer
