@@ -24,14 +24,30 @@ authenticator = stauth.Authenticate(
 )
 
 def tabForm(tab, tabRef):
-    # tabLabor, tabSubCon, tabLicense, tabTrenching, tabEVCE = {}, {} ,{}, {}, {}
+
+    deploymentStrategy = {
+        "custom" : {"numLabours":1},
+        "strat1" : {"numLabours":2},
+        "strat2" : {"numLabours":2},
+        "strat3" : {"numLabours":3}
+    }
+
+    deploymentStrategyEncode = {
+        "Custom" : "custom",
+        "50 Amp Interior Wall Mounted Hard Wired" : "strat1",
+        "40 Amp Interior Wall Mounted Plug-in" : "strat2",
+        "50 Amp Exterior Pedestal Mounted Hard Wired" : "strat3"
+     }
+
     st.session_state.tabInfo[tabRef] = {'tabLabor':{}, 'tabSubCon':{}, 'tabLicense':{}, 'tabTrenching':{}, 'tabEVCE':{}}
     with tab.expander("Deployment"):
         deployStrat = st.selectbox(label="Select the deployment Strategy:",
-                                   options=['strategy1','strategy2','custom'],key=f"deployment@{tabRef}")
+                                    options=deploymentStrategyEncode.keys(),key=f"deployment@{tabRef}",)
+        st.session_state.stratKey = deploymentStrategyEncode[deployStrat]
+        st.session_state.strategy = deploymentStrategy[deploymentStrategyEncode[deployStrat]]
 
     with tab.expander("Labor Details"):
-        numLabourers = st.number_input(label = "Number of Labourers", min_value=1, max_value=5, key=f'numlabour@{tabRef}')
+        numLabourers = st.number_input(label = "Number of Labourers", min_value=1, max_value=5, value=st.session_state.strategy['numLabours'], key=f'numlabour@{tabRef}')
         tabLabor = {f"Labor_{i+1}" : {} for i in range(0, numLabourers)}
 
         for i in range(numLabourers):
