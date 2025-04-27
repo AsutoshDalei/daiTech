@@ -211,7 +211,8 @@ def tabForm(tab, tabRef):
             col1.write(f"{ky} Cost: ${billInfoSplit[ky]}")
         col1.write(f"Pre-Tax Service Fee Total: ${billInfo.preServiceFeeTot:.2f}")
         col1.write(f"Grand Total Service Fee: ${grandTot:.2f}")
-        fig_ = px.pie(values=billInfoSplit.values(), names=billInfoSplit.keys())
+        billInfoSplit_noZero = {k: v for k, v in billInfoSplit.items() if v > 0}
+        fig_ = px.pie(values=billInfoSplit_noZero.values(), names=billInfoSplit_noZero.keys())
         col2.plotly_chart(fig_, key=f'chart@{tabRef}')
 
 
