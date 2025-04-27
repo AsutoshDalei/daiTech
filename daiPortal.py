@@ -6,10 +6,11 @@ import streamlit_authenticator as stauth
 
 import plotly.express as px
 import json
-from mongodb import pushInfo
 from datetime import *
 
+from mongodb import pushInfo
 from coreLogic import bill
+from processCustomer import fetchRecords
 # from mongodb import printJson
 
 with open("./trailCreds.yaml") as file:
@@ -36,7 +37,7 @@ def tabForm(tab, tabRef):
         for i in range(numLabourers):
             st.text(f"Labor {i+1}")
             tabLabor[f"Labor_{i+1}"]['category'] = st.text_input(label = 'Category', max_chars=25, key=f"labour{i+1}#category@{tabRef}")
-            tabLabor[f"Labor_{i+1}"]['amount'] = st.number_input(label = 'Amount', min_value=0, key=f"labour{i+1}#amount@{tabRef}")
+            tabLabor[f"Labor_{i+1}"]['amount'] = st.number_input(label = 'Amount', min_value=0.0, key=f"labour{i+1}#amount@{tabRef}")
             tabLabor[f"Labor_{i+1}"]['hours'] = st.number_input(label = 'Hours', min_value=0, max_value=24, key=f"labour{i+1}#hour@{tabRef}")
             st.divider()
 
@@ -107,6 +108,25 @@ def tabForm(tab, tabRef):
             tabTrenching[addon]['units'] = st.number_input(label=f"{addon} Units", min_value=0, key=f"{addon}#units@{tabRef}")
             st.divider()
 
+    with tab.expander("Materials"):
+        tabEVCE = {
+            'EVCE': {},
+            'Pedestal': {},
+            'Surge Protections': {},
+            'Smart Switcher': {}
+        }
+        numMaterials = st.number_input(label = "Number of Materials", min_value=1, max_value=5, key=f'nummaterial@{tabRef}')
+        tabMaterial = {f"Material_{i+1}" : {} for i in range(0, numMaterials)}
+
+
+        for i in range(numMaterials):
+            st.text(f"Material {i+1}")
+            tabMaterial[f"Material_{i+1}"]['category'] = st.text_input(label = 'Category', max_chars=25, key=f"material{i+1}#category@{tabRef}")
+            tabMaterial[f"Material_{i+1}"]['amount'] = st.number_input(label = 'Amount', min_value=0, key=f"material{i+1}#amount@{tabRef}")
+            tabMaterial[f"Material_{i+1}"]['units'] = st.number_input(label = 'units', min_value=0, key=f"material{i+1}#unit@{tabRef}")
+            st.divider()
+
+
     with tab.expander("EVCEs + Add Ons"):
         tabEVCE = {
             'EVCE': {},
@@ -165,13 +185,28 @@ def tabForm(tab, tabRef):
 
 def sidebar():
     custInfo = {}
+    st.session_state.defaultCustInfo = {"custName":None, "custAddr":None, "custPhone":None}
     with st.sidebar:
         st.title("Dai Tech's Operations Platform.")
         with st.expander("Customer Configuration"):
-            custInfo['CustomerNumber'] = st.text_input(label="Customer Reference Number",value="a#123",help='Customer\'s Reference Number.', placeholder='', max_chars= 50)
-            custInfo['CustomerName'] = st.text_input(label="Customer Name",value=None,help='Customer\'s name.', placeholder='', max_chars= 50)
-            custInfo['CustomerAddr'] = st.text_area(label="Customer's House Address", max_chars=255)
-            custInfo['CustomerPhone'] = st.number_input(label="Customer's Phone Number", help='Format: 2404321554',min_value=0,step=1)
+            form = st.form("Customer Reference")
+            custInfo['CustomerNumber'] = form.text_input(label="Customer Reference Number",value="",help='Customer\'s Reference Number.', placeholder='', max_chars= 50)
+            # st.session_state.defaultCustInfo = form.form_submit_button("submit")
+            if form.form_submit_button("submit"):
+                if custInfo['CustomerNumber'] != "":
+                    valid, response = fetchRecords(custInfo['CustomerNumber'])
+                    if valid:
+                        st.session_state.defaultCustInfo = response
+                        st.success('Data Imported!', icon="✅")
+                    else:
+                        st.error('Customer ID not found', icon="🚨")
+
+
+
+
+            custInfo['CustomerName'] = st.text_input(label="Customer Name",value=st.session_state.defaultCustInfo['custName'],help='Customer\'s name.', placeholder='', max_chars= 50)
+            custInfo['CustomerAddr'] = st.text_area(label="Customer's House Address", max_chars=255, value=st.session_state.defaultCustInfo['custAddr'])
+            custInfo['CustomerPhone'] = st.text_input(label="Customer's Phone Number", help='Format: 2404321554', value=st.session_state.defaultCustInfo['custPhone'])
             # numEstimates = st.segmented_control(label="Number of estimates",options=[1,2,3,4], default=3,help="Estimate Forms")
             numEstimates = st.number_input(label="Number of estimates", help='',min_value=1,step=1, max_value=4)
             st.session_state.qMerit = st.checkbox("QMerit Customer")
@@ -193,11 +228,6 @@ def sidebar():
         tabForm(tab, tabRef)
 
 
-# try:
-#     st.header("Dai Tech Operations")
-#     sidebar()
-# except Exception as e:
-#     st.error(e)
 
 try:
     authenticator.login()
