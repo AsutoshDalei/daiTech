@@ -156,7 +156,7 @@ def tabForm(tab, tabRef):
             st.text(f"Material {i+1}")
             tabMaterial[f"Material_{i+1}"]['category'] = st.text_input(label = 'Category', max_chars=25, key=f"material{i+1}#category@{tabRef}")
             tabMaterial[f"Material_{i+1}"]['amount'] = st.number_input(label = 'Amount', min_value=0.0, key=f"material{i+1}#amount@{tabRef}")
-            tabMaterial[f"Material_{i+1}"]['units'] = st.number_input(label = 'units', min_value=0, key=f"material{i+1}#unit@{tabRef}")
+            tabMaterial[f"Material_{i+1}"]['units'] = st.number_input(label = 'Units', min_value=0, key=f"material{i+1}#unit@{tabRef}")
             st.divider()
 
 
@@ -183,7 +183,7 @@ def tabForm(tab, tabRef):
     billInfo.labourCalc(tabLabor)
     billInfo.subContractorCalc(tabSubCon)
     billInfo.licensingCalc(tabLicense)
-    # billInfo.elecServiceCalc(tabMaterials)
+    billInfo.elecServiceCalc(tabMaterial)
     billInfo.wallCalc(tabWallPenetration)
     billInfo.outdoorCalc(tabTrenching)
     billInfo.evceCalc(tabEVCE)
